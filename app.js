@@ -139,10 +139,59 @@ addRole = () => {
                         });
                 });
             });
-    })
+    });
 }
 
+addEmployee = () => {
+    connection.query("SELECT * FROM role", function (err, roles) {
+        if (err) throw err;
+        let role = roles.map(role => role.title);
 
+        inquirer
+            .prompt({
+                name: "roles",
+                type: "rawlist",
+                choices: role,
+                message: "What will be the role of your employee?"
+            })
+            .then(function (answer) {
+
+                connection.query("SELECT id FROM role WHERE ?", { title: answer.roles }, function (err, res) {
+                    if (err) throw err;
+
+                    let roleID = res[0].id;
+                    console.log(roleID);
+
+                    inquirer
+                        .prompt([
+                            {
+                                name: "firstName",
+                                type: "input",
+                                message: "What is the employee's first name?"
+                            },
+                            {
+                                name: "lastName",
+                                type: "input",
+                                message: "What is the employee's last name?"
+                            }
+                        ])
+                        .then(function (answer) {
+                            connection.query("INSERT INTO employee SET ?",
+                                {
+                                    first_name: answer.firstName,
+                                    last_name: answer.lastName,
+                                    role_id: roleID
+                                },
+                                function (err) {
+                                    if (err) throw err;
+                                    console.log(`You successfully added ${answer.firstName} ${answer.lastName} to Employees.`);
+                                    start();
+                                });
+                        });
+                });
+            });
+    });
+}
 
 
 
