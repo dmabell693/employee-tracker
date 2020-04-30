@@ -147,51 +147,140 @@ addEmployee = () => {
         if (err) throw err;
         let role = roles.map(role => role.title);
 
-        inquirer
-            .prompt({
-                name: "roles",
-                type: "rawlist",
-                choices: role,
-                message: "What will be the role of your employee?"
-            })
-            .then(function (answer) {
+        connection.query("SELECT * FROM employee", function (err, employees) {
+            if (err) throw err;
+            let manager = employees.map(employee => employee.first_name + " " + employee.last_name);
+            manager.push("none");
 
-                connection.query("SELECT id FROM role WHERE ?", { title: answer.roles }, function (err, res) {
-                    if (err) throw err;
+            inquirer
+                .prompt([
+                    {
+                        name: "roles",
+                        type: "rawlist",
+                        choices: role,
+                        message: "What will be the role of your employee?"
+                    },
+                    {
+                        name: "managerName",
+                        type: "rawlist",
+                        choices: manager,
+                        message: "Who will be the employee's manager?"
+                    }
+                ])
+                .then(function (answer) {
 
-                    let roleID = res[0].id;
-                    console.log(roleID);
+                    connection.query("SELECT id FROM role WHERE ?", { title: answer.roles }, function (err, res) {
+                        if (err) throw err;
 
-                    inquirer
-                        .prompt([
-                            {
-                                name: "firstName",
-                                type: "input",
-                                message: "What is the employee's first name?"
-                            },
-                            {
-                                name: "lastName",
-                                type: "input",
-                                message: "What is the employee's last name?"
-                            }
-                        ])
-                        .then(function (answer) {
-                            connection.query("INSERT INTO employee SET ?",
+                        let roleID = res[0].id;
+                        console.log(roleID);
+                        console.log(res);
+                        console.log(answer.managerName);
+                        let manName = answer.managerName.split(" ");
+                        console.log(manName);
+                        console.log(manName[0]);
+                        console.log(manName[1]);
+
+                        // console.log(answer);
+
+                        connection.query("SELECT id FROM employee WHERE ?",
+                            [
                                 {
-                                    first_name: answer.firstName,
-                                    last_name: answer.lastName,
-                                    role_id: roleID
+                                    first_name: manName[0]
                                 },
-                                function (err) {
-                                    if (err) throw err;
-                                    console.log(`You successfully added ${answer.firstName} ${answer.lastName} to Employees.`);
-                                    start();
-                                });
-                        });
+                                {
+                                    last_name: manName[1]
+                                }
+                            ],
+                            function (err, res) {
+                                if (err) throw err;
+                                console.log(res);
+
+                                let managerID = res[0].id;
+                                console.log(managerID);
+
+                                inquirer
+                                    .prompt([
+                                        {
+                                            name: "firstName",
+                                            type: "input",
+                                            message: "What is the employee's first name?"
+                                        },
+                                        {
+                                            name: "lastName",
+                                            type: "input",
+                                            message: "What is the employee's last name?"
+                                        }
+                                    ])
+                                    .then(function (answer) {
+                                        connection.query("INSERT INTO employee SET ?",
+                                            {
+                                                first_name: answer.firstName,
+                                                last_name: answer.lastName,
+                                                role_id: roleID,
+                                                manager_id: managerID
+                                            },
+                                            function (err) {
+                                                if (err) throw err;
+                                                console.log(`You successfully added ${answer.firstName} ${answer.lastName} to Employees.`);
+                                                start();
+                                            });
+                                    });
+                            });
+                    });
                 });
-            });
+        });
     });
 }
+
+
+
+//                                     connection.query("SELECT * FROM employee", function (err, employees) {
+//                                         if (err) throw err;
+//                                         console.log(employees);
+//                                         let manager = employees.map(manager => manager.first_name + " " + manager.last_name);
+//                                         manager.push("none");
+
+//                                         inquirer
+//                                             .prompt({
+//                                                 name: "managerID",
+//                                                 type: "rawlist",
+//                                                 choices: manager,
+//                                                 message: "Who will be your employee's manager?"
+//                                             })
+//                                             .then(function (answer) {
+//                                                 console.log(answer);
+//                                                 if (answer.managerID === "none") {
+//                                                     console.log(roleID);
+//                                                     start();
+//                                                 } else {
+//                                                     connection.query("UPDATE employees SET ? WHERE ?",
+//                                                         [
+//                                                             {
+//                                                                 manager_id: answer.managerID
+//                                                             },
+//                                                             {
+//                                                                 first_name: answer.firstName,
+//                                                                 last_name: answer.lastName
+//                                                             }
+//                                                         ],
+//                                                         function (err) {
+//                                                             if (err) throw err;
+//                                                             console.log(`You successfully added ${answer.firstName} ${answer.lastName} to Employees.`);
+//                                                             start();
+//                                                         }
+//                                                     )
+//                                                 };
+//                                             });
+//                                     });
+//                                 });
+//                         });
+//                 });
+//             });
+//     });
+// }
+
+
 
 
 
