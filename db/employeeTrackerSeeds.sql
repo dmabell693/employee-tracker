@@ -1,18 +1,9 @@
 USE employee_tracker_DB;
 
--- INSERT INTO department (name)
--- VALUES ("engineering");
-
--- INSERT INTO role (title, salary, department_id)
--- VALUES ("engineer", "110000", 4);
-
--- INSERT INTO employee (first_name, last_name, role_id)
--- VALUES ("Brenda", "Edwards", 4);
-
--- SELECT * FROM department;
--- SELECT * FROM role;
--- SELECT * FROM employee;
-
+-- select everything
+SELECT * FROM department;
+SELECT * FROM role;
+SELECT * FROM employee;
 
 -- view employees
 SELECT employee.id, employee.first_name `first name`, employee.last_name `last name`, role.title, role.salary, department.name department, CONCAT(manager.first_name, " ", manager.last_name) manager
@@ -51,8 +42,6 @@ LEFT JOIN department ON role.department_id = department.id
 LEFT JOIN employee manager ON manager.id = employee.manager_id
 ORDER BY manager.id ASC;
 
-
-
 -- search employee by manager
 SELECT employee.id, employee.first_name `first name`, manager_id
 FROM employee
@@ -65,3 +54,8 @@ SELECT SUM(salary)
 FROM role
 LEFT JOIN employee ON role.id = employee.role_id
 WHERE department_id = 3;
+
+-- select whole budget
+SELECT SUM(salary)
+FROM role
+LEFT JOIN employee ON role.id = employee.role_id
