@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const addOptions = require("./lib/addOptions");
 const viewOptions = require("./lib/viewOptions");
+const updateOptions = require("./lib/updateOptions");
 
 start = () => {
     inquirer
