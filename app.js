@@ -1,7 +1,10 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const cTable = require("console.table");
-const options = require("./addOptions")
+const connection = require("./connection");
+const addOptions = require("./addOptions");
+const viewOptions = require("./viewOptions");
+
 
 // const connection = mysql.createConnection({
 //     host: "localhost",
@@ -31,7 +34,7 @@ start = () => {
         .then(function (answer) {
             switch (answer.startOptions) {
                 case "Add":
-                    options();
+                    addOptions();
                     break;
 
                 case "View":
