@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 const addOptions = require("./lib/addOptions");
 const viewOptions = require("./lib/viewOptions");
 const updateOptions = require("./lib/updateOptions");
+const deleteOptions = require("./lib/deleteOptions");
 
 start = () => {
     inquirer
@@ -11,7 +12,8 @@ start = () => {
             choices: [
                 "Add",
                 "View",
-                "Update"
+                "Update",
+                "Delete"
             ],
             message: "What would you like to do?"
         })
@@ -27,6 +29,9 @@ start = () => {
 
                 case "Update":
                     updateOptions();
+                    break;
+                case "Delete":
+                    deleteOptions();
                     break;
             }
         });
