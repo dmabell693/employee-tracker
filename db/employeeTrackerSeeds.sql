@@ -59,3 +59,9 @@ FROM employee
 LEFT JOIN role ON employee.role_id = role.id 
 LEFT JOIN department ON role.department_id = department.id
 WHERE manager_id = 2;
+
+-- select department budget
+SELECT SUM(salary)
+FROM role
+LEFT JOIN employee ON role.id = employee.role_id
+WHERE department_id = 3;
