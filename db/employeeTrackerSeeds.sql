@@ -34,7 +34,7 @@ FROM department
 LEFT JOIN role ON department.id = role.department_id
 LEFT JOIN employee ON role.id = employee.role_id;
 
--- view employee by manager
+-- view employees by manager
 SELECT manager.id `mgr id`, CONCAT(manager.first_name, " ", manager.last_name) manager, employee.id `emp id`, employee.first_name `first name`, employee.last_name `last name`
 FROM employee
 LEFT JOIN role ON employee.role_id = role.id 
